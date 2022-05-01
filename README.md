@@ -38,6 +38,6 @@
 ##License
 ##🔗 Links
 
-[under-title-image]: ../blob/master/docs/contrib/under_title.png?raw=true
+[under-title-image]: ../main/docs/contrib/under_title.png?raw=true
 [license-badge]: https://img.shields.io/github/license/ModernNFTSpace/MultipleNFTUploader
 [license]: ../blob/main/LICENSE
