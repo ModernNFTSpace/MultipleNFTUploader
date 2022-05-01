@@ -1,0 +1,22 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+header Program Pipeline
+
+participant EventBus
+participant AUp as "Assets\nUpload\nManager"
+control Server as S
+boundary RWorker as "Recaptcha\nSolvers"
+
+RWorker -> S: Ask to join
+S --> RWorker
+S <--> EventBus
+
+group Workflow
+    RWorker->S: valid g-recaptcha-token
+    S -> AUp: Upload request
+    AUp --> S: Uploaded result
+    S-->RWorker: Ban, shutdown or continue work
+end
+S <--> EventBus
+@enduml

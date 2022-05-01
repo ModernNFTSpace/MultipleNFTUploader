@@ -1,0 +1,34 @@
+@startyaml
+assets_data:
+  asset 0:
+    id: 0
+    attrs: []
+    file_name: "asset_0_file_name.jpg"
+    path: "C:\\\\ABSOLUTE_PATH\\asset_0_file_name.jpg"
+    traits:
+      properties:
+        - {name: Str, value: INT}
+        - {name: Str, value: INT}
+      levels:
+        - {name: Str, value: INT, max: INT}
+        - {name: Str, value: INT, max: INT}
+      stats:
+        - {name: Str, value: INT, max: INT}
+        - {name: Str, value: INT, max: INT}
+  asset 1:
+    id: 1
+    attrs: []
+    file_name: "asset_1_file_name.jpg"
+    path: "C:\\\\ABSOLUTE_PATH\\asset_1_file_name.jpg"
+    traits:
+      properties:
+        - {name: Str, value: INT}
+        - {name: Str, value: INT}
+      levels:
+        - {name: Str, value: INT, max: INT}
+        - {name: Str, value: INT, max: INT}
+      stats:
+        - {name: Str, value: INT, max: INT}
+        - {name: Str, value: INT, max: INT}
+assets_count: 2
+@endyaml

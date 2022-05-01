@@ -1,0 +1,175 @@
+openapi: "3.0.2"
+info:
+  title: MNU Server API
+  version: "1.0"
+servers:
+  - url: http://127.0.0.1:18040/v1
+paths:
+  /ui/init:
+    parameters:
+      - name: mnu_ui_secret
+        in: header
+        description: UI secret from MNUSecrets config
+        required: true
+        schema:
+          type: string
+      - name: ui_client_name
+        in: header
+        description: The name of the program implementing the UI
+        required: false
+        schema:
+            type: string
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                callback_url:
+                  type: string
+                  format: uri
+                  example: http://domain_or_ip:port/callback
+                  description: Callback for Server State update
+              required:
+                - callback_url
+      responses:
+        '200':
+          description: Auth completed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  session_key:
+                    type: string
+                  server_info:
+                    description: mnu_api_primitives.ServerInfo
+                required:
+                  - session_key
+        '403':
+          description: Invalid UI secret
+
+      callbacks:
+        serverStateChangedEvent:
+          '{$request.body#/callback_url}':
+            parameters:
+              - name: mnu_session
+                in: header
+                description: Session token
+                required: true
+                schema:
+                  type: string
+            post:
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      description: UIStateHolder().json_encoded()
+              responses:
+                '201':
+                  description: Client must return this code, otherwise -> unsubscribe
+
+  /ui/state:
+    parameters:
+      - name: mnu_session_key
+        in: header
+        description: Session key, received from /ui/init
+        required: true
+        schema:
+          type: string
+    get:
+      responses:
+        '200':
+          description: Returning current server state. See mnu_api_primitives.UIStateHolder for details
+          content:
+            application/json:
+              schema:
+                description: UIStateHolder().json_encoded()
+        '401':
+          description: Unauthorized
+
+  /ui/commands:
+    get:
+      responses:
+        '401':
+          description: Forbidden
+
+  /ui/commands/uploading/{action}:
+    parameters:
+    - name: mnu_session_key
+      in: header
+      description: Session key, received from /ui/init
+      required: true
+      schema:
+        type: string
+    - name: action
+      in: path
+      description: Start or Stop uploading process
+      required: true
+      schema:
+        type: string
+        enum:
+        - stop
+        - start
+    put:
+      responses:
+        '202':
+          description: All ok
+        '401':
+          description: Unauthorized
+
+  /ui/commands/drivers/{action}/{count}:
+    parameters:
+    - name: mnu_session_key
+      in: header
+      description: Session key, received from /ui/init
+      required: true
+      schema:
+        type: string
+    - name: action
+      in: path
+      description: Managing assets uploader drivers
+      required: true
+      schema:
+        type: string
+        enum:
+        - add
+        - remove
+        - remove_all_and_add
+    - name: count
+      in: path
+      description: Count of drivers that will be affected
+      required: true
+      schema:
+        oneOf:
+          - type: string
+            enum:
+            - all
+            - one
+          - type: integer
+            default: 1
+            minimum: 1
+    put:
+      responses:
+        '202':
+          description: All ok
+        '401':
+          description: Unauthorized
+
+  /ui/commands/server/stop:
+    parameters:
+    - name: mnu_session_key
+      in: header
+      description: Session key, received from /ui/init
+      required: true
+      schema:
+        type: string
+    put:
+      responses:
+        '202':
+          description: All ok
+        '401':
+          description: Unauthorized

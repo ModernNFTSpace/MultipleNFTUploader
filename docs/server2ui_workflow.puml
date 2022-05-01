@@ -1,0 +1,40 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+control Server as S
+participant UI as "User\nInterface"
+
+group Init
+    UI -> S: Init request
+    S --> UI: session key
+end
+note over S, UI
+    UI may not support callback events.
+    In this case UI must requesting Server State
+    by itself with some interval, like long polling
+end note
+
+group Callback events
+    S -> UI: Server State Changed
+    note right
+        Rendering
+    end note
+
+    S -> UI: Server Shutdown signal
+    note right
+        Closing
+    end note
+end
+group User Control
+    UI -> S: Start working
+    UI -> S: Stop working
+    UI -> S: Shutdown server
+end
+note right
+    Almost
+    every event
+    triggering
+    Server State
+    Changes
+end note
+@enduml

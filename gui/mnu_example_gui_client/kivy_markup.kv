@@ -1,0 +1,226 @@
+#:import utils kivy.utils
+#:import datetime datetime.datetime
+#:import timezone datetime.timezone
+<MNUConnectionScreen>
+    disabled: True
+    FloatLayout:
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: "assets/ConnectionScreen/bg.png"
+    	size: root.width, root.height
+
+    	MNUInput:
+    	    id: mnu_server_address
+    	    text: str(app.server_address["addr"])
+    	    on_text: app._set_server_addr(self.text)
+    	    hint_text: "Address"
+    	    width: 285
+    	    pos: 50, 116
+    	MNUInput:
+    	    id: mnu_server_port
+    	    text: str(app.server_address["port"])
+    	    on_text: app._set_server_port(self, self.text)
+    	    hint_text: "Port"
+    	    pos: 345, 116
+    	    input_filter: lambda text, from_undo: text[:5 - len(self.text)]
+
+    	Label:
+    	    id: mnu_connection_error
+    	    opacity: 0
+    	    color: 204/255, 153/255, 153/255, 1
+    	    text: "Connection error"
+            size_hint: None, None
+            size: self.texture_size
+            pos: 80, 60
+
+    	MNUConnectBtn:
+    	    id: mnu_server_connect
+    	    size: 100, 40
+    	    pos: root.width/2 - self.size[0]/2, 50
+    	    markup: True
+    	    text: "[color=#000000]Connect[/color]"
+    	    on_press:
+    	        root.connect_btn_trigger(app)
+    	Image:
+    	    id: connection_spinner
+    	    angle: 0
+    	    opacity: 0
+    	    source: "assets/ConnectionScreen/connection_spinner.png"
+    	    size_hint: None, None
+    	    size: self.texture_size
+    	    pos: 345, 46
+    	    canvas.before:
+                PushMatrix
+                Rotate:
+                    angle: self.angle
+                    axis: 0, 0, 1
+                    origin: self.center
+            canvas.after:
+                PopMatrix
+
+
+<MNUSessionScreen>
+    RelativeLayout:
+        size: root.width, root.height
+        canvas.before:
+        #    Color:
+        #        rgb: 1, 0.5, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: "assets/SessionScreen/bg.png"
+        FilteredLabel:
+            size: 182, self.texture_size[1]
+            pos: 245, 345
+            text: self.text_wrapper(root.opt_server_address)
+
+        StatusLabel:
+            pos: 170, 316
+            status: str(root.opt_server_status)
+
+        SLabel:
+            pos: 110, 232
+            text: root.opt_collection_name
+
+        SingleUnitTimeLabel:
+            time: root.opt_uploading_time
+            pos: 180, 198
+
+        StrftimeLabel:
+            time: root.opt_remaining_time
+            pos: 340, 198
+
+        OneOf:
+            opt_one: root.opt_assets_count["count"]
+            opt_of: root.opt_assets_count["max"]
+            pos: 190, 216
+
+        OneOf:
+            opt_one: root.opt_drivers_count["count"]
+            opt_of: root.opt_drivers_count["max"]
+            pos: 124, 110
+
+        SingleUnitTimeLabel:
+            time: root.opt_driver_init_time
+            pos: 340, 110
+
+        StatusLabel:
+            status_options: {"Waiting for drivers...": "#c8c8fa", "Stopped": "#ff6763", "Uploading...": "#bcff9b"}
+            pos: 114, 30
+            status: root.opt_upload_status
+
+        Widget:
+            id: btns_container
+            SessionScreenStartUpload:
+                id: session_screen_start_btn
+                disabled: root.opt_disable_upload_btns or root.opt_disable_start_upload_btns
+                on_press: root.send_command("uploading/start", app)
+                pos: 300, 30
+
+            SessionScreenStopUpload:
+                disabled: root.opt_disable_upload_btns or not session_screen_start_btn.disabled
+                on_press: root.send_command("uploading/stop", app)
+                pos: 370, 30
+
+            SessionScreenShutdownServer:
+                on_press: root.send_command("server/stop", app)
+                pos: 48, 316
+
+<MNUInput@TextInput>
+    size_x_per_char: 24
+    font_name: "RobotoMono-Regular"
+    font_size: 20
+    background_asset: "assets/ConnectionScreen/input.png"
+    background_normal: self.background_asset
+    background_active: self.background_asset
+    background_disabled_normal: self.background_asset
+    height: 50
+    min_width: 50
+    size_hint_y: None
+    size_hint_x: None
+    multiline: False
+    padding_x: [20]
+    padding_y: [self.height / 2.0 - (self.line_height / 2.0) * len(self._lines), 0]
+
+<MNUConnectBtn@Button>
+    font_size: 20
+    size_hint: None, None
+    background_down: "assets/ConnectionScreen/btn_down.png"
+    background_normal: "assets/ConnectionScreen/btn_normal.png"
+    background_disabled_normal: self.background_down
+    background_disabled_down: self.background_down
+
+<SLabel@Label>
+    halign: "center"
+    font_family: "Roboto-Regular"
+    font_size: 16
+    color: 0,0,0,1
+    size: self.texture_size
+    size_hint: None, None
+    #canvas.before:
+    #    Color:
+    #        rgba: 0.5, 0.5, 1, 0.8
+    #    Rectangle:
+    #        pos: self.pos
+    #        size: self.size
+
+<TextFilter@WidgetBase>
+    max_length: 21
+    text_filter: lambda t: t if len(t)<=self.max_length else f"...{t[-(self.max_length-3):]}"
+    text_wrapper: lambda t: str(self.text_filter(t))
+
+<RightBoundTextFilter@TextFilter>
+    text_filter: lambda t: t if len(t)<=self.max_length else f"{t[:self.max_length-3]}..."
+
+<FilteredLabel@SLabel+TextFilter>
+
+<StatusLabel@SLabel>
+    markup: True
+    status_options: {"ready": "#a0ebb0", "shutdown": "#ff8c8c"}
+    status: None
+    text: f"[color={self.status_options[self.status]}]{self.status}[/color]" if self.status in self.status_options else ""
+
+<SingleUnitTimeLabel@SLabel>
+    available_units: ["seconds", "minutes", "hours"]
+    available_units_placeholders: ["s", "m", "h"]
+    time: 0
+    units: "seconds"
+    calc: lambda valid_units=self.units in self.available_units: (lambda unit_index=self.available_units.index(self.units): f"{(self.time/(60**unit_index)):.2f} {self.available_units_placeholders[unit_index]}")() if valid_units else "Units not found"
+    text: self.calc()
+
+<StrftimeLabel@SLabel+RightBoundTextFilter>
+    time: 0
+    max_length: 12
+    text: self.text_wrapper(datetime.fromtimestamp(self.time, tz=timezone.utc).strftime("%Hh %Mm %Ss" if self.time<86400 else f"~ {self.time/86400} day(s)"))
+
+<OneOf@SLabel>
+    opt_one: 1
+    opt_of: 4
+    text: f"{self.opt_one} of {self.opt_of}"
+
+<SessionScreenStartUpload@Button>
+    size_hint: None, None
+    size: 64, 30
+    background_down: "assets/SessionScreen/uploading_start_down.png"
+    background_normal: "assets/SessionScreen/uploading_start_normal.png"
+    background_disabled_normal: "assets/SessionScreen/uploading_start_disabled.png"
+    background_disabled_down: "assets/SessionScreen/uploading_start_disabled.png"
+
+<SessionScreenStopUpload@Button>
+    size_hint: None, None
+    size: 57, 30
+    background_down: "assets/SessionScreen/uploading_stop_down.png"
+    background_normal: "assets/SessionScreen/uploading_stop_normal.png"
+    background_disabled_normal: "assets/SessionScreen/uploading_stop_disabled.png"
+    background_disabled_down: "assets/SessionScreen/uploading_stop_disabled.png"
+
+<SessionScreenShutdownServer@Button>
+    size_hint: None, None
+    size: 52, 52
+
+    background_down: "assets/SessionScreen/btn_shutdown_down.png"
+    background_disabled_down: "assets/SessionScreen/btn_shutdown_down.png"
+    background_disabled_normal: "assets/SessionScreen/btn_shutdown_down.png"
+    background_normal: "assets/SessionScreen/btn_shutdown_normal.png"
