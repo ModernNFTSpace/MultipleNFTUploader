@@ -12,10 +12,12 @@
 [Getting started](#getting-started) •
 [Installation](#installation) •
 
+![Image][under-title-image]
 </div>
 
 ¹ Tested on 2000 assets ~100 KB each<br />
 ¹ Assets per Hour → ApH
+
 ##Table of content
 - [Futures](#features)
 - [Requirements](#requirements)
@@ -36,6 +38,6 @@
 ##License
 ##🔗 Links
 
-
+[under-title-image]: ../blob/master/docs/contrib/under_title.png?raw=true
 [license-badge]: https://img.shields.io/github/license/ModernNFTSpace/MultipleNFTUploader
-[license]: https://github.com/ModernNFTSpace/MultipleNFTUploader/blob/main/LICENSE
+[license]: ../blob/main/LICENSE
