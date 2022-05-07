@@ -11,10 +11,6 @@ import os
 import re
 import json
 
-from rich.console import Console
-
-console = Console()
-
 
 url_pattern = re.compile(r"^(?:http(s)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:\/?#[\]@!\$&'\(\)\*\+,;=.]+$")
 

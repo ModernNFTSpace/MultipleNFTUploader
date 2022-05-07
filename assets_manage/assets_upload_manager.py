@@ -1,8 +1,9 @@
 from events import ServerEvent as SE, EventHolder
-from data_holders import UploadDataHolder, console
+from data_holders import UploadDataHolder
 from driver_init import init_driver_before_success, driver_upload_asset
 from config import MetamaskConfig, CollectionConfig
 from assets_manage.assets_handler import AssetsHandler
+from mnu_utils import console
 
 from typing import Union
 from time import time as UnixTimestamp

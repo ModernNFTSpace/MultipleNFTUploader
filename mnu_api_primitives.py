@@ -215,7 +215,7 @@ def construct_MNUAPIPrimitive_from_json(data: str) -> Optional[MNUploaderAPIPrim
 
 
 if __name__ == "__main__":
-    from data_holders import console
+    from mnu_utils import console
     from rich.console import Group
     from rich.table import Table
     from rich.highlighter import ReprHighlighter

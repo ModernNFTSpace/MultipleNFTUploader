@@ -290,7 +290,7 @@ def gen_empty_configs() -> Sequence[str]:
     """
     Create empty configs
 
-    :return: Errors caught while creating
+    :return: Error or success messages
     """
     messages = []
     for sub_cls in ConfigClass.__subclasses__():

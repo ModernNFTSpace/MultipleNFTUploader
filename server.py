@@ -1,12 +1,13 @@
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-from config import MNUServerConfig, MNUSecrets, CollectionConfig
+from config import MNUSecrets, CollectionConfig
 from version import __version__, __server_version__, __name__ as app_name
 
-from data_holders import UploadResponseHolder, SessionsHolder, console
+from data_holders import UploadResponseHolder, SessionsHolder
 from events import EventHolder, ServerEvent, UIRequestEvent
 from assets_manage.assets_upload_manager import AssetsUploadManager
 from mnu_api_primitives import UIStateHolder
+from mnu_utils import console
 
 from typing import Optional
 from threading import Thread, Event, Semaphore
@@ -405,18 +406,12 @@ class MNUHandler:
 
 
 def main():
+    from mnu_utils import get_server_argparser
     import subprocess
-    import argparse
     import sys
     import os
 
-    arguments = argparse.ArgumentParser()
-
-    arguments.add_argument("--ui", help="Autorun UI", action=argparse.BooleanOptionalAction, default=True)
-    arguments.add_argument("--external-ui", help="Path to external UI implementation",
-                           default=MNUServerConfig().external_gui_path)
-    arguments.add_argument("--port", help="Server port. UI will connect to this port",
-                           default=MNUServerConfig().server_port)
+    arguments = get_server_argparser()
 
     parsed_args = arguments.parse_args()
 
