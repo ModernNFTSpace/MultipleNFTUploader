@@ -1,1 +1,1 @@
-Docs in progress, but you can [ask us](../master/README.md#contacts) and we will try to help
+Docs in progress, but you can [ask us](../../../README.md#contacts) and we will try to help
