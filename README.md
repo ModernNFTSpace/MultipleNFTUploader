@@ -18,9 +18,9 @@
 [Installation](#-installation) •
 [Support](#support)
  
-[![Liberpay][liberapay-badge]]([liberapay-link])
+[![liberapay-badge]][liberapay-link]
 ![last-commit-date-badge]
-[![Patreon][patreon-badge]]([patreon-link])
+[![patreon-badge]][patreon-link]
 </div>
 
 ¹ Tested on 2000 assets ~100 KB and ~3 sec for each<br />
@@ -101,8 +101,8 @@ GUI part(implemented example):
 ## Support
 
 You can support us financially, even 0.50$ will be enough:<br>
-[![Liberpay][liberapay-badge]]([liberapay-link])
-[![Patreon][patreon-badge]]([patreon-link])
+[![liberapay-badge]][liberapay-link]
+[![patreon-badge]][patreon-link]
 <br>
 <br>
 But if you have a penchant for art - better help us with the graphic design of the project 😉
