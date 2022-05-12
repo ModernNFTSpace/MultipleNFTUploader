@@ -127,8 +127,10 @@ MNU stores some data in configuration files, such as collection data (will be mi
 ### Installation testing
 Run command:
 ```sh
-py.test  
+py.test tests
 ```
+Will be checked configs and a test upload will be performed (into a test collection)
+If tests finished without <span data-color="red">errors</span>
 
 ## 🌟 Features
 * 1000 [ApH](#aph)
@@ -166,7 +168,7 @@ If you have any questions or suggestions please contact us:
 [Metamask](https://metamask.io/)
 
 [guide-create-metamask]: ../master/docs/guides/create_metamask_and_give_access/
-[guide-asset-data-customization]: ../master/
+[guide-asset-data-customization]: ../master/docs/guides/asset_data_customization/
 
 [license-file-link]: ../master/LICENSE?raw=true
 [mn-guide-repo]: #
