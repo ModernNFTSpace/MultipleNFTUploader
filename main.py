@@ -1,6 +1,7 @@
 if __name__ == "__main__":
     from mnu_utils import get_server_argparser, console
     from mnu_utils.webdriver_setup import download_webdriver
+    from mnu_utils.requirements_installer import install_requirements
     from config import gen_empty_configs
 
     from rich.panel import Panel
@@ -25,6 +26,8 @@ if __name__ == "__main__":
         )
 
     if args.setup:
+        install_requirements()
+
         msgs = gen_empty_configs()
 
         console.print(

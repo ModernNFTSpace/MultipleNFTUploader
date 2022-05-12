@@ -1,0 +1,3 @@
+[submodule "mn_penpusher"]
+	path = mn_penpusher
+	url = https://github.com/ModernNFTSpace/MNPenpusher

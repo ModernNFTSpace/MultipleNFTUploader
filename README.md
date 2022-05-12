@@ -10,19 +10,23 @@
 
 **MNU** created to help with uploading multiple assets to [opensea.io](https://opensea.io) 🚢
 
-<br/>Minimum uploading speed → _1000 assets per hour_⁽¹⁾
+<br>Minimum uploading speed → _1000 assets per hour_⁽¹⁾
 
 ![Image][under-title-image]
 
 [Futures](#-features) •
 [Installation](#-installation) •
-[Support](#support) 
+[Support](#support)
+ 
+[![Liberpay][liberapay-badge]]([liberapay-link])
+![last-commit-date-badge]
+[![Patreon][patreon-badge]]([patreon-link])
 </div>
 
 ¹ Tested on 2000 assets ~100 KB and ~3 sec for each<br />
 ¹ Assets per Hour → <a name="aph">ApH</a>
 
-####Note
+#### Note
 >MNU only uploads assets, to put up for sale use [MNManager](#mnm-repo)(repo will be unlocked soon)
 >For view full pipeline of uploading/selling assets read \[[How upload multiple assets to opensea.io](#mn-guide-repo)\]
 ><br><br>
@@ -56,7 +60,7 @@ Backend part:
 GUI part(implemented example):
 >OpenGL 2.0+
 ## 💾 Installation
-###Install Google Chrome
+### Install Google Chrome
 >⚠ If it is already installed on your system, skip this step.
 
 1. Follow steps described at [Google Support](https://support.google.com/chrome/answer/95346)
@@ -75,7 +79,7 @@ GUI part(implemented example):
         ```
 1. Clone repository and go into MNU dir:
     ```sh
-    git clone https://github.com/ModernNFTSpace/MultipleNFTUploader.git && cd MultipleNFTUploader
+    git clone --recurse-submodules https://github.com/ModernNFTSpace/MultipleNFTUploader.git && cd MultipleNFTUploader
     ```
 1. Install requirements:
     ```sh
@@ -93,19 +97,47 @@ GUI part(implemented example):
 * Support for all types accepted by the opensea.io(image/\*,video/\*,audio/\*,webgl/\*,.glb,.gltf)
 * Fault resistance pipeline. In case of failure, the resource will not be lost, but will be re-queued. Also you can stop the process at any time and continue from the same place later
 * The UI is implemented using HTTP, so it is possible to implement GUI as a web interface(Webhooks and long poling supported)
+
 ## Support
+
+You can support us financially, even 0.50$ will be enough:<br>
+[![Liberpay][liberapay-badge]]([liberapay-link])
+[![Patreon][patreon-badge]]([patreon-link])
+<br>
+<br>
+But if you have a penchant for art - better help us with the graphic design of the project 😉
+
 ## Contacts
 
 If you have any questions or suggestions please contact us:
  - via [telegram bot](#tg-feedback-bot-link)
  
 ## License
+
+[Read full license text]([license-file-link])
+
 ## 🔗 Links
 
+[ChromeDriver download page](https://chromedriver.chromium.org/) 
+<br>
+[Selenium WebDriver](https://selenium-python.readthedocs.io/)
+<br>
+[Opensea.io](https://opensea.io/)
+<br>
+[Metamask](https://metamask.io/)
+
+[license-file-link]: ../master/LICENSE?raw=true
 [mn-guide-repo]: #
 [mnm-repo]: #
 [tg-feedback-bot-link]: https://t.me/mns_feedback_bot
 [under-title-image]: ../master/docs/contrib/under_title.png?raw=true
+
+[last-commit-date-badge]: https://img.shields.io/github/last-commit/ModernNFTSpace/MultipleNFTUploader?color=green
+
+[patreon-badge]: https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3DModernNFTSpace%26type%3Dpatrons&style=flat
+[patreon-link]: https://patreon.com/ModernNFTSpace
+[liberapay-badge]: https://img.shields.io/liberapay/patrons/ModernNFTSpace.svg?logo=liberapay
+[liberapay-link]: https://liberapay.com/ModernNFTSpace
 [assets-up-yo-badge]: https://img.shields.io/badge/assets%20up%20to-100mb-green
 [mnu-version-badge]: https://img.shields.io/github/v/release/ModernNFTSpace/MultipleNFTUploader?include_prereleases
 [speed-badge]: https://img.shields.io/badge/speed-1000ApH-green

@@ -1,0 +1,5 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+(Prepare assets) -> (Upload)
+(Upload) -right-> (Sell on the market)
+@enduml

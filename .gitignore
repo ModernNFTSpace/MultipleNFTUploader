@@ -4,4 +4,5 @@ dev/
 .*/
 /test.py
 /bin/*
-!.gitkeep
+!.git*
+!.github/
