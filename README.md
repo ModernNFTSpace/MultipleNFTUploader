@@ -43,8 +43,8 @@
   - [Install package](#install-mnu)
 - [Getting started](#-getting-started)
   - [Setup configs]()
-  - [Prepare assets]()
   - [Testing]()
+  - [Prepare assets]()
 - [Support](#support)
 - [Contacts](#contacts)
 - [License](#license)
@@ -91,6 +91,45 @@ GUI part(implemented example):
     ```
 ## 💡 Getting started
 >Note: At the moment, MNU does not have the most user-friendly interface (will be fixed during refactoring). This is due to the emphasis on quality and speed of work.
+### Setup configs
+MNU stores some data in configuration files, such as collection data (will be migrated), server settings, and metamask wallet data
+>Note: <br>    Don`t use your main wallet for uploading.<br>    Instead create a new wallet and give it upload access to the collection
+><br><br>    If you are use a different authorization method on opensea,<br>    then you will also need to get a Metamask wallet
+><br><br>    [How create Metamask wallet and configure collection][guide-create-metamask] for using with MNU
+
+⚠️if you have any problems - [contact us](#contacts)
+
+1. Configure `configs/metamask.conf`:<br>
+   1. Open in any editor
+   1. Replace "null" with your Metamask secret phrase
+      ```yaml
+      secret_phase: null
+      ```
+   1. Save & exit
+   
+1. Configure `configs/metamask.conf`:<br>
+   1. Open in any editor
+   1. Paste inside quotes collection slug, in which you want to upload assets.<br>For example `mnu-collection` is a slug for `https://opensea.io/collection/mnu-collection`
+      ```yaml
+      collection_name: 'mnu-collection'
+      ```
+   1. Paste inside quotes absolute path to directory with your assets(with manifest file).
+      ```yaml
+      collection_dir_local_path: 'C:\\collection_dir'
+      ```
+   1. Paste inside quotes base name for assets. It will be used for generating names.<br>For example: "MNU asset#0", "MNU asset#1", ... 
+      ```yaml
+      single_asset_name: 'MNU Asset'
+      ```
+   1. These settings are enough to start the upload. You can learn more about asset data customization [here][guide-asset-data-customization].
+   1. Save & exit
+
+### Installation testing
+Run command:
+```sh
+py.test  
+```
+
 ## 🌟 Features
 * 1000 [ApH](#aph)
 * Almost complete emulation of human behavior
@@ -114,7 +153,7 @@ If you have any questions or suggestions please contact us:
  
 ## License
 
-[Read full license text]([license-file-link])
+[Read full license text][license-file-link]
 
 ## 🔗 Links
 
@@ -125,6 +164,9 @@ If you have any questions or suggestions please contact us:
 [Opensea.io](https://opensea.io/)
 <br>
 [Metamask](https://metamask.io/)
+
+[guide-create-metamask]: ../master/docs/guides/create_metamask_and_give_access/
+[guide-asset-data-customization]: ../master/
 
 [license-file-link]: ../master/LICENSE?raw=true
 [mn-guide-repo]: #
