@@ -16,10 +16,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     def setup_webdriver():
-        download_webdriver()
+        w_version, _ = download_webdriver()
         console.print(
             Panel.fit(
-                "[green]WebDriver[/] was [yellow]downloaded[/] & [orange4]patched[/]",
+                f"[green]WebDriver v{w_version}[/] was [yellow]downloaded[/] & [orange4]patched[/]",
                 padding=(1, 2),
                 title=f"[b red]WebDriver info"
             )

@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Tuple
 from urllib.request import urlopen, urlretrieve
 from urllib.parse import urljoin
 from glob import glob
@@ -136,15 +136,20 @@ class WebDriverDownloader:
         return None
 
 
-def download_webdriver(chrome_major_version: Optional[int] = None, patch_driver: bool = True) -> None:
+def download_webdriver(chrome_major_version: Optional[int] = None, patch_driver: bool = True) -> Tuple[str, str]:
     """
     Download WebDriver for specified major version or for latest version, and path binary if needed. See WebDriverPatcher for details
 
     :param chrome_major_version: If specified will be returned latest version for this major version
     :param patch_driver: If True, webdriver will be patched after downloading
+    :returns: tuple(version, w_path),
+        - str version - version of downloaded driver
+        - str w_path - path to downloaded webdriver
     """
     downloader = WebDriverDownloader(chrome_major_version)
-    downloader.get_webdriver_executable(patch_driver)
+
+    w_path = downloader.get_webdriver_executable(patch_driver)
+    return downloader.target_version, w_path
 
 
 if __name__ == "__main__":

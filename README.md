@@ -42,9 +42,9 @@
 - [Installation](#-installation)
   - [Install package](#install-mnu)
 - [Getting started](#-getting-started)
-  - [Setup configs]()
-  - [Testing]()
-  - [Prepare assets]()
+  - [Prepare assets](#prepare-assets)
+  - [Setup configs](#setup-configs)
+  - [Testing](#installation-testing)
 - [Support](#support)
 - [Contacts](#contacts)
 - [License](#license)
@@ -89,8 +89,18 @@ GUI part(implemented example):
     ```sh
     python main.py --setup
     ```
+1. In "WebDriver info" section will be showing downloaded version of webdriver.
+If it differs from the version(**major** part) of Google Chrome you have - read [How manually download webdriver][guide-manually-download-webdriver]
+ 
 ## 💡 Getting started
 >Note: At the moment, MNU does not have the most user-friendly interface (will be fixed during refactoring). This is due to the emphasis on quality and speed of work.
+### Prepare assets
+To work with MNU, you need to collect data about your assets in a so-called manifest file. This simplifies the process of searching for assets, and also provides a mechanism for customizing the traits of assets when uploading.
+
+To simple prepare the assets, do:
+1. Create a folder and copy all assets you want upload
+2. Copy absolute path to folder(it will also be needed to be added to the [configuration file](#collection_dir_config))
+
 ### Setup configs
 MNU stores some data in configuration files, such as collection data (will be migrated), server settings, and metamask wallet data
 >Note: <br>    Don`t use your main wallet for uploading.<br>    Instead create a new wallet and give it upload access to the collection
@@ -113,7 +123,7 @@ MNU stores some data in configuration files, such as collection data (will be mi
       ```yaml
       collection_name: 'mnu-collection'
       ```
-   1. Paste inside quotes absolute path to directory with your assets(with manifest file).
+   1. <a name="collection_dir_config">Paste inside quotes absolute path to directory with your assets(with manifest file).</a>
       ```yaml
       collection_dir_local_path: 'C:\\collection_dir'
       ```
@@ -129,8 +139,8 @@ Run command:
 ```sh
 py.test tests
 ```
-Will be checked configs and a test upload will be performed (into a test collection)
-If tests finished without <span data-color="red">errors</span>
+Will be checked configs and a test upload will be performed (into a test collection)<br><br>
+If tests finished without error/fail(xfailed doesn't count) ➡ congrats you set up MNU (with the current lack of usability - this is a feat)🥳
 
 ## 🌟 Features
 * 1000 [ApH](#aph)
@@ -169,6 +179,7 @@ If you have any questions or suggestions please contact us:
 
 [guide-create-metamask]: ../master/docs/guides/create_metamask_and_give_access/
 [guide-asset-data-customization]: ../master/docs/guides/asset_data_customization/
+[guide-manually-download-webdriver]: ../master/docs/guides/manually_download_webdriver/
 
 [license-file-link]: ../master/LICENSE?raw=true
 [mn-guide-repo]: #
