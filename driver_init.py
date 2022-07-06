@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from selenium.common.exceptions import ElementClickInterceptedException, NoSuchElementException, TimeoutException
+from selenium.common.exceptions import SessionNotCreatedException, WebDriverException, TimeoutException
 
 from random import randint
 
@@ -20,7 +20,7 @@ import json
 import js_injections
 
 from glob import glob
-from typing import Union
+from typing import Union, Optional
 
 from config import CollectionConfig, MetamaskConfig
 from data_holders import UploadResponseHolder
@@ -32,11 +32,28 @@ class MNUDriverInitError(Exception):
     ...
 
 
-class UnexpectedResult(MNUDriverInitError):
+class MNUDriverBinaryNotFound(MNUDriverInitError):
     ...
 
 
-class LaunchLimitExceeded(MNUDriverInitError):
+class MNUDriverSessionNotCreated(MNUDriverInitError):
+    """
+    The script could not establish a session with the driver.
+    Most often this is caused by a mismatch between the versions
+    of the driver and the browser installed on the system
+    (redownload the driver: 'python main.py --update-driver')
+    """
+
+
+class MNUDriverSetupError(MNUDriverInitError):
+    ...
+
+
+class UnexpectedResult(MNUDriverSetupError):
+    ...
+
+
+class LaunchLimitExceeded(MNUDriverSetupError):
     ...
 
 
@@ -75,9 +92,16 @@ def driver_init(secret_phases=SECRET, temp_password=PASSWORD, auth_lock: Lock = 
     opt.add_experimental_option('excludeSwitches', ['enable-logging', "enable-automation"])
     opt.add_experimental_option('useAutomationExtension', False)
 
-    driver = webdriver.Chrome(service=Service(webdriver_path), options=opt)
+    try:
+        driver = webdriver.Chrome(service=Service(webdriver_path), options=opt)
+    except (FileNotFoundError, WebDriverException) as E:
+        raise MNUDriverBinaryNotFound from E
+    except SessionNotCreatedException as E:
+        raise MNUDriverSessionNotCreated from E
     ####
     driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+
+    #~UA override via Chrome CDP
     #driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.53 Safari/537.36'})
     ####
 
@@ -271,7 +295,7 @@ def init_driver_before_success(
         auth_lock: Lock = Lock(),
         hide_warnings: bool = True,
         max_attempts: int = 5
-) -> WebDriverParentClass:
+) -> Optional[WebDriverParentClass]:
     count = 0
     while max_attempts>count:
         try:
@@ -280,7 +304,11 @@ def init_driver_before_success(
             driver_init_end_time = time.time()
             output_bus.put(EventHolder(ServerEvent.WORKER_READY, {"id": worker_id, "duration": driver_init_end_time-driver_init_start_time}))
             return driver
-        except (MNUDriverInitError, TimeoutException) as e:
+        except MNUDriverInitError as e:
+            output_bus.put(EventHolder(ServerEvent.WORKER_DRIVER_INITIALIZING_FAILURE, worker_id))
+            output_bus.put(EventHolder(ServerEvent.WORKER_DRIVER_INIT_TECHNICAL_ERROR, e))
+            raise e
+        except (MNUDriverSetupError, TimeoutException) as e:
             output_bus.put(EventHolder(ServerEvent.WORKER_DRIVER_INITIALIZING_FAILURE, worker_id))
     output_bus.put(EventHolder(ServerEvent.WORKER_DRIVER_INIT_ATTEMPTS_EXCEEDED, worker_id))
 

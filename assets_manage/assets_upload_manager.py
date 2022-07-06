@@ -1,11 +1,11 @@
 from events import ServerEvent as SE, EventHolder
 from data_holders import UploadDataHolder
-from driver_init import init_driver_before_success, driver_upload_asset
+from driver_init import init_driver_before_success, driver_upload_asset, MNUDriverInitError
 from config import MetamaskConfig, CollectionConfig
 from assets_manage.assets_handler import AssetsHandler
 from mnu_utils import console
 
-from typing import Union
+from typing import Union, Literal
 from time import time as UnixTimestamp
 from threading import Thread, Event, Lock
 from queue import Queue, Empty as QueueEmptyException
@@ -20,7 +20,12 @@ class DriverInstance:
     """
     Class of workers, which will upload assets
     """
+
+    DriverStatus = Literal["Created", "Working", "Stopped", "Error"]
+
     def __init__(self, input_bus: Queue, output_bus: Queue, auth_lock: Lock, input_bus_lock: Event, worker_id: int) -> None:
+        self.status         = "Created" # type: DriverInstance.DriverStatus
+
         self.input_bus      = input_bus
         self.output_bus     = output_bus
         self.auth_lock      = auth_lock
@@ -53,6 +58,10 @@ class DriverInstance:
             self._configure()
         except HTTPError as e:
             console.log(f"App was closed before, driver(worker_id={self.worker_id}) was initialized. You may close Browser by yourself", style="yellow")
+        except MNUDriverInitError as e:
+            self.close_event.set()
+            self.status = "Error"
+            return
 
         self._listen_events()
 
@@ -64,9 +73,11 @@ class DriverInstance:
             MetamaskConfig().temp_password,
             auth_lock=self.auth_lock
         )
+
         self.driver_init_time = UnixTimestamp()
 
     def _listen_events(self) -> None:
+        self.status = "Working"
         while not self.close_event.is_set():
 
             if not self.input_bus_lock.wait(2):
@@ -94,6 +105,7 @@ class DriverInstance:
 
         if self.close_event.is_set():
             self.output_bus.put(EventHolder(SE.WORKER_STOPPED, self.worker_id))
+            self.status = "Stopped"
 
         if self.driver is not None:
             self.driver.quit()

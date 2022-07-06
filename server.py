@@ -9,7 +9,7 @@ from assets_manage.assets_upload_manager import AssetsUploadManager
 from mnu_api_primitives import UIStateHolder
 from mnu_utils import console
 
-from typing import Optional
+from typing import Optional, Any
 from threading import Thread, Event, Semaphore
 from queue import Queue
 
@@ -29,6 +29,10 @@ class MNUServerException(Exception):
 
 class StopServerException(Exception):
     """Mainly used to stop the server"""
+
+
+class StopServerDueTechnicalReason(StopServerException):
+    """Stopping the server for reasons not related to the code"""
 
 
 def check_port_availability(port: int) -> bool:
@@ -275,9 +279,10 @@ class MNUHandler:
             server_version=self.server._server_version
         )
 
-    def run(self, rich_status: Optional["Status"] = None):
+    def run(self, rich_status: Optional["Status"] = None) -> Optional[Exception]:
         self.server.start()
         self.upload_manager.init_drivers(self._init_drivers_on_start)
+        payload: Any = None
         try:
             while True:
                 if not self.uploader_events_bus.empty():
@@ -322,6 +327,8 @@ class MNUHandler:
                         elif upload_event.check(ServerEvent.WORKER_EVENTS_BUS_UNLOCKED):
                             self.server.server_state.drivers_data.uploading_is_active = True
 
+                        elif upload_event.check(ServerEvent.WORKER_DRIVER_INIT_TECHNICAL_ERROR):
+                            raise StopServerDueTechnicalReason()
                         elif upload_event.check(ServerEvent.WORKER_DRIVER_INITIALIZING_FAILURE):
                             ...
                         elif upload_event.check(ServerEvent.WORKER_DRIVER_INIT_ATTEMPTS_EXCEEDED):
@@ -382,7 +389,7 @@ class MNUHandler:
                                 self.upload_manager.init_drivers(count)
 
                         elif ui_event.check(UIRequestEvent.UI_COMMAND_SERVER_ACTION):
-                            action = ui_event.payload["action"] # Now action -> only "stop"
+                            action = ui_event.payload["action"] # Now only one action -> "stop"
                             # TODO: Add functionality
                             raise StopServerException()
 
@@ -392,10 +399,11 @@ class MNUHandler:
                     except AssertionError as AE:
                         console.log("[red]During handling UI event received wrong type payload[/]", AE)
 
-        except (KeyboardInterrupt, StopServerException):
+        except (KeyboardInterrupt, StopServerException) as e:
             if rich_status is not None:
                 rich_status.update('Server closing, please wait', spinner='hamburger', spinner_style="blue")
             self.on_stop()
+            return payload if isinstance(e, StopServerDueTechnicalReason) else None
 
     def on_stop(self):
         self.server.stop()
@@ -443,7 +451,8 @@ def main():
         else:
             console.log(f"UI autorun turned off")
         status.update('Server working', spinner='hamburger', spinner_style="green")
-        handler.run(status)
+        res_error = handler.run(status)
+
     console.log("App closed.")
 
 

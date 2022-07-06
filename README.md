@@ -28,7 +28,7 @@
 
 #### Note
 >MNU only uploads assets, to put up for sale use [MNManager](#mnm-repo)(repo will be unlocked soon)
->For view full pipeline of uploading/selling assets read \[[How upload multiple assets to opensea.io](#mn-guide-repo)\]
+>For view full pipeline of uploading/selling assets read \[[How upload multiple assets to opensea.io][mn-guide-repo]\]
 ><br><br>
 >Project is currently in Alpha, but is actively developed. If you want support us go to this [section](#support)
 ><br><br>
@@ -71,7 +71,7 @@ GUI part(implemented example):
 1. Create a folder and go into it
     + CMD
         ```sh
-        mkdir "%programfiles%\MNSpace" && cd "%programfiles%\MNSpace"
+        mkdir "%programfiles%\MNSpace" && cd /d "%programfiles%\MNSpace"
         ```
     + Bash
         ```sh
@@ -99,7 +99,13 @@ To work with MNU, you need to collect data about your assets in a so-called mani
 
 To simple prepare the assets, do:
 1. Create a folder and copy all assets you want upload
-2. Copy absolute path to folder(it will also be needed to be added to the [configuration file](#collection_dir_config))
+1. Copy absolute path to folder
+1. Run(Replace **ABS_PATH** with path which you copied earlier):
+   ```sh
+   python -m mn_penpusher --path "ABS_PATH"
+   ```
+1. Preparing complete. Remember the path to the folder, it will be needed to be included in the [configuration file](#collection_dir_config)
+>Note: If the project is in demand, the GUI for preparing assets will be added
 
 ### Setup configs
 MNU stores some data in configuration files, such as collection data (will be migrated), server settings, and metamask wallet data
@@ -123,7 +129,7 @@ MNU stores some data in configuration files, such as collection data (will be mi
       ```yaml
       collection_name: 'mnu-collection'
       ```
-   1. <a name="collection_dir_config">Paste inside quotes absolute path to directory with your assets(with manifest file).</a>
+   1. <a name="collection_dir_config">Paste inside quotes absolute path to directory with your assets<br>(folder from ["Prepare assets"](#prepare-assets) step, with manifest file).</a>
       ```yaml
       collection_dir_local_path: 'C:\\collection_dir'
       ```
@@ -140,7 +146,7 @@ Run command:
 py.test tests
 ```
 Will be checked configs and a test upload will be performed (into a test collection)<br><br>
-If tests finished without error/fail(xfailed doesn't count) ➡ congrats you set up MNU (with the current lack of usability - this is a feat)🥳
+If tests finished without error/fail(xfailed doesn't count) ➡ congrats you set up MNU<br>(with the current lack of usability - this is a feat)🥳
 
 ## 🌟 Features
 * 1000 [ApH](#aph)
@@ -182,8 +188,8 @@ If you have any questions or suggestions please contact us:
 [guide-manually-download-webdriver]: ../master/docs/guides/manually_download_webdriver/
 
 [license-file-link]: ../master/LICENSE?raw=true
-[mn-guide-repo]: #
-[mnm-repo]: #
+[mn-guide-repo]: https://github.com/ModernNFTSpace/How-upload-multiple-NFTs-to-opensea.io
+[mnm-repo]: https://github.com/ModernNFTSpace/MNManager
 [tg-feedback-bot-link]: https://t.me/mns_feedback_bot
 [under-title-image]: ../master/docs/contrib/under_title.png?raw=true
 
