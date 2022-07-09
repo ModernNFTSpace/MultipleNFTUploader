@@ -20,12 +20,12 @@ import json
 import js_injections
 
 from glob import glob
-from typing import Union, Optional
+from typing import Union, Optional, Any
 
-from config import CollectionConfig, MetamaskConfig
+from config import MetamaskConfig, ExceptionsFoundedDuringInit
 from data_holders import UploadResponseHolder
 from events import EventHolder, ServerEvent
-from mnu_utils import abs_path_from_base_dir_relative, MNU_WEBDRIVER_ABS_PATH, MNU_WEBDRIVER_ABS_PATH_PATTERN
+from mnu_utils import console, abs_path_from_base_dir_relative, MNU_WEBDRIVER_ABS_PATH, MNU_WEBDRIVER_ABS_PATH_PATTERN
 
 
 class MNUDriverInitError(Exception):
@@ -57,33 +57,42 @@ class LaunchLimitExceeded(MNUDriverSetupError):
     ...
 
 
-SECRET = MetamaskConfig().secret_phase
-PASSWORD = MetamaskConfig().temp_password
+#TODO: Remove
+try:
+    SECRET = MetamaskConfig().secret_phase
+    PASSWORD = MetamaskConfig().temp_password
+except ExceptionsFoundedDuringInit:
+    console.log("[yellow]MetamaskConfig[/] error. Run [green]'python config.py -p'[/] for find mismatches")
+    console.log("[red]Program work in wrong way!")
+    SECRET = None
+    PASSWORD = None
 
 EXTENSION_PATH   = abs_path_from_base_dir_relative('metamask/10.10.2_0.crx')
 
 
 def check_webdriver_exists(webdriver_path: str = MNU_WEBDRIVER_ABS_PATH_PATTERN) -> bool:
+    """
+    Check exists of webdriver binary
+
+    :param webdriver_path: Pattern for finding binary
+    :return: True if exist, False otherwise
+    """
     return len(glob(webdriver_path))>0
 
 
-def driver_init(secret_phases=SECRET, temp_password=PASSWORD, auth_lock: Lock = Lock(), hide_warnings: bool = False, webdriver_path: str = MNU_WEBDRIVER_ABS_PATH) -> WebDriverParentClass:
-    """
-    Configuring driver for uploading
-    #TODO: Refactoring
-    """
+def init_driver_for_manual_actions(webdriver_path: str = MNU_WEBDRIVER_ABS_PATH) -> WebDriverParentClass:
 
     opt = webdriver.ChromeOptions()
 
     # Disabled due to small impact and increasing loading time
     #
-    #opt.add_argument(f"--user-data-dir={PROFILES_PATH}")
-    #opt.add_argument(f"--profile-directory={SELECTED_PROFILE}")
+    # opt.add_argument(f"--user-data-dir={PROFILES_PATH}")
+    # opt.add_argument(f"--profile-directory={SELECTED_PROFILE}")
 
     # Disabled for passing Cloudflare protection
     # CF detecting mismatch with real user agent
     #
-    #opt.add_argument(f'user-agent={USER_AGENT["google chrome"]}')
+    # opt.add_argument(f'user-agent={USER_AGENT["google chrome"]}')
 
     opt.add_argument('--disable-blink-features=AutomationControlled')
     opt.add_argument(f"window-size={randint(1100, 1900)},{randint(700, 1000)}")
@@ -94,18 +103,29 @@ def driver_init(secret_phases=SECRET, temp_password=PASSWORD, auth_lock: Lock = 
 
     try:
         driver = webdriver.Chrome(service=Service(webdriver_path), options=opt)
-    except (FileNotFoundError, WebDriverException) as E:
-        raise MNUDriverBinaryNotFound from E
     except SessionNotCreatedException as E:
-        raise MNUDriverSessionNotCreated from E
+        raise MNUDriverSessionNotCreated() from E
+    except (FileNotFoundError, WebDriverException) as E:
+        raise MNUDriverBinaryNotFound() from E
     ####
     driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
 
-    #~UA override via Chrome CDP
-    #driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.53 Safari/537.36'})
+    # ~UA override via Chrome CDP
+    # driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.53 Safari/537.36'})
     ####
 
-    def wait_for_element(by, data, sec=2, cond=EC.presence_of_element_located, web_driver=driver, poll_frequency=0.5):
+    return driver
+
+
+def driver_init(secret_phases=SECRET, temp_password=PASSWORD, auth_lock: Lock = Lock(), hide_warnings: bool = False, webdriver_path: str = MNU_WEBDRIVER_ABS_PATH) -> WebDriverParentClass:
+    """
+    Configuring driver for uploading
+    #TODO: Refactoring
+    """
+
+    driver = init_driver_for_manual_actions(webdriver_path)
+
+    def wait_for_element(by, data, sec: Union[int, float] = 2, cond=EC.presence_of_element_located, web_driver=driver, poll_frequency=0.5):
         return WebDriverWait(web_driver, sec, poll_frequency=poll_frequency).until(cond((by, data)))
 
     def wait_for_elements(by, data, sec=2, cond=EC.presence_of_all_elements_located, web_driver=driver, poll_frequency=0.5):
@@ -114,6 +134,7 @@ def driver_init(secret_phases=SECRET, temp_password=PASSWORD, auth_lock: Lock = 
     def step(max_repeat=10, sleep_time=1, step_hide_warnings=False, auto_run=False, _args=[]):
         def _inner(func):
             def try_execute_step(*args, max_repeat=max_repeat):
+                res: Any
                 for attempt in range(1, max_repeat + 1):
                     try:
                         res = func(*args)
@@ -175,7 +196,7 @@ def driver_init(secret_phases=SECRET, temp_password=PASSWORD, auth_lock: Lock = 
             if current_url != driver.current_url:
                 break
             time.sleep(1)
-        #print(driver.current_url)
+
         assert '#initialize/end-of-flow' in driver.current_url or '#initialize/seed-phrase-intro' in driver.current_url
 
     @step(auto_run=True)
@@ -251,13 +272,24 @@ def driver_init(secret_phases=SECRET, temp_password=PASSWORD, auth_lock: Lock = 
             def _confirm():
                 assert '/account' in driver.current_url
 
-    driver_conf_end_time = time.time()
-    #event_bus.put(UploaderEvent(EventType.time_spent_on_last_driver_start, payload=driver_conf_end_time-driver_start_time))
+    def _check_privacy_policy_popup():
+        try:
+            current_window = driver.current_window_handle
+            wait_for_element(By.XPATH, '//div[@aria-modal="true"]/footer/button[2]', sec=2.5, poll_frequency=0.1).click()
+
+            switch_to_last_window()  # switch_to_metamask_popup
+
+            wait_for_element(By.XPATH, '//*[@id="app-content"]/div/div[2]/div/div[3]/button[2]', poll_frequency=0.2).click()  # confirm
+            driver.switch_to.window(current_window)
+            wait_for_element(By.XPATH, '//div[@aria-modal="true"]/footer/button[2]', sec=1, poll_frequency=0.1, cond=EC.invisibility_of_element_located)
+        except TimeoutException:
+            ...
+
+    #_check_privacy_policy_popup() #Need only on first account login
 
     @step(auto_run=True, max_repeat=3, sleep_time=0.1)
     def get_uploading_page():
 
-        start_time = time.time()
         upload_url = 'https://opensea.io/asset/create' #f'https://opensea.io/collection/{collection_name}/assets/create'
         driver.get(upload_url)
 
@@ -318,7 +350,7 @@ def driver_upload_asset(
         asset_id: int,
         asset_abs_file_path: str,
         driver: WebDriverParentClass,
-        wait_in_sec: Union[int, float] = CollectionConfig().max_upload_time,
+        wait_in_sec: Union[int, float] = 30,
         input_group_id: int = 0
 ) -> UploadResponseHolder:
     """

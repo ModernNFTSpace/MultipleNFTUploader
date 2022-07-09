@@ -41,10 +41,8 @@ def get_server_argparser() -> argparse.ArgumentParser:
 
     group = arguments.add_argument_group("Server arguments")
     group.add_argument("--ui", help="Autorun UI", action=argparse.BooleanOptionalAction, default=True)
-    group.add_argument("--external-ui", help="Path to external UI implementation",
-                           default=MNUServerConfig().external_gui_path)
-    group.add_argument("--port", help="Server port. UI will connect to this port",
-                           default=MNUServerConfig().server_port)
+    group.add_argument("--external-ui", help="Path to external UI implementation", default=MNUServerConfig(hide_errors=True).external_gui_path)
+    group.add_argument("--port", help="Server port. UI will connect to this port", default=MNUServerConfig(hide_errors=True).server_port)
     return arguments
 
 

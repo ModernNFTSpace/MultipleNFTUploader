@@ -1,5 +1,5 @@
 from collections.abc import MutableMapping
-from config import CollectionConfig
+from config import CollectionConfig, ExceptionsFoundedDuringInit
 
 from dataclasses import dataclass, asdict
 from typing import Optional, Type, Generator
@@ -109,7 +109,10 @@ class RecaptchaTokenHolder:
         return self.timestamp+self.live_time >= time() if self.can_be_expire else False
 
 
-DEFAULT_COLLECTION_INFO = CollectionConfig().dict_like
+try:
+    DEFAULT_COLLECTION_INFO = CollectionConfig().dict_like
+except ExceptionsFoundedDuringInit:
+    DEFAULT_COLLECTION_INFO = {}
 
 
 class SingleAssetData(MutableMapping):

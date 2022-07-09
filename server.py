@@ -414,6 +414,7 @@ class MNUHandler:
 
 
 def main():
+    from mnu_auditor.error_interpreter import explain_errors
     from mnu_utils import get_server_argparser
     import subprocess
     import sys
@@ -443,6 +444,8 @@ def main():
 
     console.log("App started")
 
+    res_error: Optional[Exception]
+
     with console.status("Server starting...", spinner="dots", spinner_style="red") as status:
         handler = MNUHandler(server_port)
         if autorun_ui:
@@ -452,6 +455,10 @@ def main():
             console.log(f"UI autorun turned off")
         status.update('Server working', spinner='hamburger', spinner_style="green")
         res_error = handler.run(status)
+
+        if res_error is not None:
+            console.log("[red]Error occurred")
+            console.log(explain_errors((res_error,)))
 
     console.log("App closed.")
 

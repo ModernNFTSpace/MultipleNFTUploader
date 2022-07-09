@@ -41,6 +41,18 @@ class ExceptionsFoundedDuringInit(ConfigInitException):
     ...
 
 
+class AuditorConfigException(ConfigInitException):
+    """Signal parent class for mnu auditor"""
+
+
+class AuditorConfigMismatchesFound(AuditorConfigException):
+    ...
+
+
+class AuditorConfigFilenamesConflict(AuditorConfigException):
+    ...
+
+
 #TODO: rewrite logic using typing
 class ConfigClass:
     """
@@ -66,6 +78,7 @@ class ConfigClass:
         return cls._instance
 
     def __init__(self, hide_errors=False):
+        self.hide_errors = hide_errors
         self.captured_errors = [] # type: list[ConfigInitException]
         file_name = self.config_file_path()
         if not os.path.isfile(file_name):
@@ -84,8 +97,12 @@ class ConfigClass:
                 else:
                     setattr(self, attr_obj.name, attr)
 
-        if not hide_errors and len(self.captured_errors)>0:
+        if not self.hide_errors and len(self.captured_errors)>0:
             raise ExceptionsFoundedDuringInit(*self.captured_errors)
+
+    def __getattr__(self, item):
+        if self.hide_errors:
+            print(f"<{self.__class__.__name__}> attribute '{item}' error")
 
     def __str__(self):
         return f'<{self.__class__.__name__} {new_line.join((f"{new_line}{conf.name}={getattr(self, conf.name, None)}" for conf in self.config_attrs()))}>'

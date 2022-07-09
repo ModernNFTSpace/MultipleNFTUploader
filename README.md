@@ -102,7 +102,7 @@ To simple prepare the assets, do:
 1. Copy absolute path to folder
 1. Run(Replace **ABS_PATH** with path which you copied earlier):
    ```sh
-   python -m mn_penpusher --path "ABS_PATH"
+   python -m mn_penpusher --path="ABS_PATH"
    ```
 1. Preparing complete. Remember the path to the folder, it will be needed to be included in the [configuration file](#collection_dir_config)
 >Note: If the project is in demand, the GUI for preparing assets will be added
