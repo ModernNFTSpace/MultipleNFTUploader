@@ -88,6 +88,35 @@
             display: inline-block;
             opacity: 0;
         }
+        #info-block{
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: flex-end;
+        }
+        #note-block{
+            width: 70%;
+            margin-right: 20px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+
+            opacity: 0.5;
+            font-size: 18px;
+            font-weight: bold;
+
+            background-color: rgba(35, 41, 48, 0.1);
+            border: 1px solid rgba(35, 41, 48, 0.2);
+            border-radius: 5px;
+            padding: 5px 10px;
+        }
+        #note-block>img{
+            height: 32px;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -95,11 +124,17 @@
     <div style="height: 100%; display: flex;justify-content: center;">
         <img src="https://opensea.io/static/images/logos/opensea.svg" style="max-width: 320px; width: 90%;">
     </div>
-    <div id="description">
-        <h1 id="title">
-            Modern NFT Uploader
-        </h1>
-        <p>Upload your assets in the blink of an eye</p>
+    <div id="info-block">
+        <div id="description">
+            <h1 id="title">
+                Modern NFT Uploader
+            </h1>
+            <p>Upload your assets in the blink of an eye</p>
+        </div>
+        <div id="note-block">
+            <img src="data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciICB2aWV3Qm94PSIwIDAgNTAgNTAiIHdpZHRoPSI1MHB4IiBoZWlnaHQ9IjUwcHgiPjxwYXRoIGQ9Ik0gMjUgMiBDIDEyLjMwOTI5NSAyIDIgMTIuMzA5Mjk1IDIgMjUgQyAyIDM3LjY5MDcwNSAxMi4zMDkyOTUgNDggMjUgNDggQyAzNy42OTA3MDUgNDggNDggMzcuNjkwNzA1IDQ4IDI1IEMgNDggMTIuMzA5Mjk1IDM3LjY5MDcwNSAyIDI1IDIgeiBNIDI1IDQgQyAzNi42MDk4MjQgNCA0NiAxMy4zOTAxNzYgNDYgMjUgQyA0NiAzNi42MDk4MjQgMzYuNjA5ODI0IDQ2IDI1IDQ2IEMgMTMuMzkwMTc2IDQ2IDQgMzYuNjA5ODI0IDQgMjUgQyA0IDEzLjM5MDE3NiAxMy4zOTAxNzYgNCAyNSA0IHogTSAyNSAxMSBBIDMgMyAwIDAgMCAyMiAxNCBBIDMgMyAwIDAgMCAyNSAxNyBBIDMgMyAwIDAgMCAyOCAxNCBBIDMgMyAwIDAgMCAyNSAxMSB6IE0gMjEgMjEgTCAyMSAyMyBMIDIyIDIzIEwgMjMgMjMgTCAyMyAzNiBMIDIyIDM2IEwgMjEgMzYgTCAyMSAzOCBMIDIyIDM4IEwgMjMgMzggTCAyNyAzOCBMIDI4IDM4IEwgMjkgMzggTCAyOSAzNiBMIDI4IDM2IEwgMjcgMzYgTCAyNyAyMSBMIDI2IDIxIEwgMjIgMjEgTCAyMSAyMSB6Ii8+PC9zdmc+" alt="">
+            <span>Do not close this tab while MNU is working</span>
+        </div>
 <!--        <div id="links">-->
 <!--            <a href=""><img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt=""><div>GitHub</div></a>-->
 <!--        </div>-->

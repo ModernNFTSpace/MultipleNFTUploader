@@ -82,7 +82,9 @@
 
         SLabel:
             pos: 110, 232
-            text: root.opt_collection_name
+            markup: True
+            text: f"[color=262e38][u][ref=collection]{root.opt_collection_name}[/ref][/u][/color]"
+            on_ref_press: root.open_collection_page()
 
         SingleUnitTimeLabel:
             time: root.opt_uploading_time

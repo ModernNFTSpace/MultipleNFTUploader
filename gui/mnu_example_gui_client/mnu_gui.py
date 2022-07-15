@@ -277,6 +277,10 @@ class MNUSessionScreen(Screen):
         self.ids.btns_container.disabled = True
         app._send_command(command)
 
+    def open_collection_page(self):
+        import webbrowser
+        webbrowser.open(f"https://opensea.io/collection/{self.opt_collection_name}", new=2)
+
 
 class MNUploaderGUI(App):
     use_callback: bool = True
