@@ -148,6 +148,16 @@ py.test tests
 Will be checked configs and a test upload will be performed (into a test collection)<br><br>
 If tests finished without error/fail(xfailed doesn't count) ➡ congrats you set up MNU<br>(with the current lack of usability - this is a feat)🥳
 
+### Running application
+After all the above manipulations, you can run MNU and start uploading. In this order:
+
+1. Start program via command line:
+    ```bash
+    python main.py
+    ```
+2. If you configured the configs correctly, a browser session will be launched (in which you will be logged into opensea.io) and a graphical interface for managing MNU will also be launched
+3. After "everything starts", click the \<Start\> button to start uploading.
+
 ## 🌟 Features
 * 1000 [ApH](#aph)
 * Almost complete emulation of human behavior
