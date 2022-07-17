@@ -25,6 +25,7 @@ from kivy.lang.builder import Builder
 from kivy.animation import Animation
 from kivy.uix.screenmanager import ScreenManager, Screen, WipeTransition
 from kivy.properties import NumericProperty, OptionProperty, StringProperty, DictProperty, BooleanProperty
+from kivy .core.clipboard import Clipboard
 
 from kivy.core.window import Window
 from kivy.config import Config
@@ -278,8 +279,16 @@ class MNUSessionScreen(Screen):
         app._send_command(command)
 
     def open_collection_page(self):
-        import webbrowser
-        webbrowser.open(f"https://opensea.io/collection/{self.opt_collection_name}", new=2)
+        collection_link = f"https://opensea.io/collection/{self.opt_collection_name}"
+
+        #TODO: Create separate btns
+        #~Open link in browser
+        #import webbrowser
+        #webbrowser.open(collection_link, new=2)
+
+        #~Copy link to clipboard
+        Clipboard.copy(collection_link)
+
 
 
 class MNUploaderGUI(App):
