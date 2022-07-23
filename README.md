@@ -26,6 +26,22 @@
 ¹ Tested on 2000 assets ~100 KB and ~3 sec for each<br />
 ¹ Assets per Hour → <a name="aph">ApH</a>
 
+## 🌟 About
+
+Uploads NFT assets to opensea.io, 'automatically' and with the highest possible performance (also possibly parallel loading will be added).
+Implemented in python:
+* Account authorization - Selenium
+* Uploading - reversed opensea`s API and some features
+* Implemented GUI example - Kivy
+
+### Features
+* 1000 [ApH](#aph)
+* Almost complete emulation of human behavior
+* Support for all types accepted by the opensea.io(image/\*,video/\*,audio/\*,webgl/\*,.glb,.gltf)
+* Fault resistance pipeline. In case of failure, the resource will not be lost, but will be re-queued. Also you can stop the process at any time and continue from the same place later
+* The UI is implemented using HTTP, so it is possible to implement GUI as a web interface(Webhooks and long poling supported)
+
+
 #### Note
 >MNU only uploads assets, to put up for sale use [MNManager](#mnm-repo)(repo will be unlocked soon)
 >For view full pipeline of uploading/selling assets read \[[How upload multiple assets to opensea.io][mn-guide-repo]\]
@@ -147,13 +163,6 @@ py.test tests
 ```
 Will be checked configs and a test upload will be performed (into a test collection)<br><br>
 If tests finished without error/fail(xfailed doesn't count) ➡ congrats you set up MNU<br>(with the current lack of usability - this is a feat)🥳
-
-## 🌟 Features
-* 1000 [ApH](#aph)
-* Almost complete emulation of human behavior
-* Support for all types accepted by the opensea.io(image/\*,video/\*,audio/\*,webgl/\*,.glb,.gltf)
-* Fault resistance pipeline. In case of failure, the resource will not be lost, but will be re-queued. Also you can stop the process at any time and continue from the same place later
-* The UI is implemented using HTTP, so it is possible to implement GUI as a web interface(Webhooks and long poling supported)
 
 ## Support
 
