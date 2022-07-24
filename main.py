@@ -26,7 +26,7 @@ if __name__ == "__main__":
             w_version, _ = download_webdriver()
             msg = f"[green]WebDriver v{w_version}[/] was [yellow]downloaded[/] & [orange4]patched[/]"
         except WDPermissionErrorWhileUnzipping:
-            msg = "[yellow]WebDriver[/] [red]has not been installed[/], due to [red]Permission error[/]. Close all Browser instances and manually delete [yellow]WD[/] binary."
+            msg = "[yellow]WebDriver[/] [red]has not been installed[/], due to [red]Permission error[/].\nClose all Browser instances and manually delete [yellow]WD[/] binary.\nRestarting the terminal might also help."
 
         console.print(
             Panel.fit(
