@@ -122,16 +122,16 @@ class SingleAssetData(MutableMapping):
           "id": INT,
           "assetPath": ABSOLUTE_PATH_STR,
           "collection": STR,
+          "chain": BLOCKCHAIN_NAME_STR,
+          "name": ASSET_NAME_STR,
           "description": NULL or STR,
           "externalLink": NULL or STR,
-          "maxSupply": STR(INT),
-          "name": ASSET_NAME_STR,
-          "chain": BLOCKCHAIN_NAME_STR,
           "unlockableContent": NULL or STR,
           "isNsfw": BOOL,
           "properties": [{"name":STR,"value":STR}],
           "levels": [{"name":STR,"value":INT,"max":INT}],
           "stats": [{"name":STR,"value":INT,"max":INT}]
+          "maxSupply": STR(INT),
         }
     """
     necessary_keys = ["collection", "name", "description", "externalLink", "properties", "levels", "stats",
@@ -141,11 +141,15 @@ class SingleAssetData(MutableMapping):
         """
         dict_with_data -    must be be one dict from COLLECTION_DATA,
                             namely:
-                                dict, like: {"id": INT, "attrs": [STR], "path": STR_ABSOLUTE_PATH, "file_name": STR}
+                                dict, like: {"id": INT, "path": STR_ABSOLUTE_PATH, "file_name": STR}
+                                optionally may contain keys: {"attrs": [STR], "props": {}}
+                                    "attrs" - optional list, contain asset list of characteristic. Exist when asset was generated(other MNS`s script). Used for custom generating "props"(via code)
+                                    "props" - optional dict, which contain all keys that characterizes asset("name", "description", "externalLink", "unlockableContent", "isNsfw", "properties", "levels", "stats", "max", "maxSupply"). Look class doc string for details
         """
         self.use_absolute_path = collection_info.get("use_absolute_path", True)
-        self.origin      = dict_with_data
-        self.origin_info = collection_info
+        self.origin       = dict_with_data
+        self.origin_props = dict_with_data.get("props", {})
+        self.origin_info  = collection_info
         self.store = {
             "id": str(self.id),
             "assetPath": self.path,
@@ -195,51 +199,53 @@ class SingleAssetData(MutableMapping):
         Return abs path to the asset file
         :return: Absolute path
         """
-        if self.use_absolute_path and self.origin["path"]:
+        if self.use_absolute_path and "path" in self.origin and self.origin["path"]:
             return self.origin["path"]
         else:
-            assert self.origin_info["collection_dir_local_path"]
-            assert self.origin["file_name"]
             return os.path.abspath(os.path.join(self.origin_info["collection_dir_local_path"], self.origin["file_name"]))
 
     @property
     def name(self) -> str:
-        return f'{self.single_asset_name}#{self.origin["id"]}'
+        return f'{self.single_asset_name}#{self.origin["id"]}' if "name" not in self.origin_props else self.origin_props["name"]
 
     @property
     def external_link(self) -> Optional[str]:
-        return None
+        return None if "externalLink" not in self.origin_props else self.origin_props["externalLink"]
 
     @property
     def description(self) -> Optional[str]:
-        return self.collection_description if self.collection_description else None
+        """'Collection description' is primary. If empty, trying to use 'description' from 'props'"""
+        return\
+            self.collection_description if self.collection_description else\
+            (None if "description" not in self.origin_props else self.origin_props["description"])
 
     @property
     def properties(self) -> list:
-        return []
+        return [] if "properties" not in self.origin_props else self.origin_props["properties"]
 
     @property
     def levels(self) -> list:
-        return []
+        return [] if "levels" not in self.origin_props else self.origin_props["levels"]
 
     @property
     def stats(self) -> list:
-        return []
+        return [] if "stats" not in self.origin_props else self.origin_props["stats"]
 
     @property
     def unlockable_content(self) -> Optional[str]:
-        return None
+        return None if "unlockableContent" not in self.origin_props else self.origin_props["unlockableContent"]
 
     @property
     def nsfw_content(self) -> bool:
-        return False
+        return False if "isNsfw" not in self.origin_props else self.origin_props["isNsfw"]
 
     @property
     def supply(self) -> int:
-        return 1
+        return 1 if "maxSupply" not in self.origin_props else self.origin_props["maxSupply"]
 
     @property
     def blockchain(self) -> str:
+        """Modify at your own risk"""
         return 'MATIC'
 
     def __str__(self):
