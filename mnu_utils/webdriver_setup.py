@@ -13,6 +13,14 @@ import io
 import os
 
 
+class WebDriverSetupException(Exception):
+    ...
+
+
+class WDPermissionErrorWhileUnzipping(WebDriverSetupException):
+    ...
+
+
 class WebDriverPatcher:
     """
     Removing "cdc_" token from webdriver binary
@@ -98,7 +106,10 @@ class WebDriverDownloader:
 
         zip_path = self.download()
         with zipfile.ZipFile(zip_path, 'r') as f_zip:
-            f_zip.extractall(self.webdriver_dir)
+            try:
+                f_zip.extractall(self.webdriver_dir)
+            except PermissionError as E:
+                raise WDPermissionErrorWhileUnzipping() from E
 
         unzipped = glob(f"{os.path.join(self.webdriver_dir, MNU_WEBDRIVER_EXE_NAME)}*")
         if len(unzipped)<1:

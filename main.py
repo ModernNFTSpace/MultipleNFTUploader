@@ -1,6 +1,6 @@
 if __name__ == "__main__":
     from mnu_utils import get_server_argparser, console
-    from mnu_utils.webdriver_setup import download_webdriver
+    from mnu_utils.webdriver_setup import download_webdriver, WDPermissionErrorWhileUnzipping
     from mnu_utils.requirements_installer import install_requirements
 
     from rich.panel import Panel
@@ -21,10 +21,16 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     def setup_webdriver():
-        w_version, _ = download_webdriver()
+        msg: str
+        try:
+            w_version, _ = download_webdriver()
+            msg = f"[green]WebDriver v{w_version}[/] was [yellow]downloaded[/] & [orange4]patched[/]"
+        except WDPermissionErrorWhileUnzipping:
+            msg = "[yellow]WebDriver[/] [red]has not been installed[/], due to [red]Permission error[/]. Close all Browser instances and manually delete [yellow]WD[/] binary."
+
         console.print(
             Panel.fit(
-                f"[green]WebDriver v{w_version}[/] was [yellow]downloaded[/] & [orange4]patched[/]",
+                msg,
                 padding=(1, 2),
                 title=f"[b red]WebDriver info"
             )
