@@ -77,8 +77,9 @@ class ConfigClass:
             cls._instance = object.__new__(cls)
         return cls._instance
 
-    def __init__(self, hide_errors=False):
+    def __init__(self, hide_errors: bool = False, disable_warnings: bool = False):
         self.hide_errors = hide_errors
+        self.disable_warnings = disable_warnings
         self.captured_errors = [] # type: list[ConfigInitException]
         file_name = self.config_file_path()
         if not os.path.isfile(file_name):
@@ -101,7 +102,7 @@ class ConfigClass:
             raise ExceptionsFoundedDuringInit(*self.captured_errors)
 
     def __getattr__(self, item):
-        if self.hide_errors:
+        if self.hide_errors and not self.disable_warnings:
             print(f"<{self.__class__.__name__}> attribute '{item}' error")
 
     def __str__(self):
