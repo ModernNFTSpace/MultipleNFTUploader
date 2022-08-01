@@ -106,7 +106,7 @@ GUI part(implemented example):
     python main.py --setup
     ```
 1. In "WebDriver info" section will be showing downloaded version of webdriver.
-If it differs from the version(**major** part) of Google Chrome you have - read [How manually download webdriver][guide-manually-download-webdriver]
+If it differs from the version(**major** part) of Google Chrome you have - read [How to manually download webdriver][guide-manually-download-webdriver]
  
 ## 💡 Getting started
 >Note: At the moment, MNU does not have the most user-friendly interface (will be fixed during refactoring). This is due to the emphasis on quality and speed of work.
