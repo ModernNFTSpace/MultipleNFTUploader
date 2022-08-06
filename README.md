@@ -228,4 +228,4 @@ If you have any questions or suggestions please contact us:
 [speed-badge]: https://img.shields.io/badge/speed-1000ApH-green
 [opensea-io-badge]: https://img.shields.io/badge/opensea.io-supported-brightgreen?logo=opensea
 [license-badge]: https://img.shields.io/github/license/ModernNFTSpace/MultipleNFTUploader
-[license]: ../blob/master/LICENSE
+[license]: ../master/LICENSE
