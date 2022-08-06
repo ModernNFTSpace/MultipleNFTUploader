@@ -75,6 +75,11 @@ Backend part:
 
 GUI part(implemented example):
 >OpenGL 2.0+
+
+## 🎥 Installation video
+
+[![How to setup MNU](https://img.youtube.com/vi/lZ01xz_KhVg/0.jpg)](https://www.youtube.com/watch?v=lZ01xz_KhVg)
+
 ## 💾 Installation
 ### Install Google Chrome
 >⚠ If it is already installed on your system, skip this step.
