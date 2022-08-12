@@ -192,6 +192,7 @@ But if you have a penchant for art - better help us with the graphic design of t
 
 If you have any questions or suggestions please contact us:
  - via [telegram bot](#tg-feedback-bot-link)
+ - via channel [@modern_nft_space]([tg-channel-link])
  
 ## License
 
@@ -207,6 +208,7 @@ If you have any questions or suggestions please contact us:
 <br>
 [Metamask](https://metamask.io/)
 
+
 [guide-create-metamask]: ../master/docs/guides/create_metamask_and_give_access/
 [guide-asset-data-customization]: ../master/docs/guides/asset_data_customization/
 [guide-manually-download-webdriver]: ../master/docs/guides/manually_download_webdriver/
@@ -215,6 +217,7 @@ If you have any questions or suggestions please contact us:
 [mn-guide-repo]: https://github.com/ModernNFTSpace/How-upload-multiple-NFTs-to-opensea.io
 [mnm-repo]: https://github.com/ModernNFTSpace/MNManager
 [tg-feedback-bot-link]: https://t.me/mns_feedback_bot
+[tg-channel-link]: https://t.me/+aDUuQyr-dQM2MTEy
 [under-title-image]: ../master/docs/contrib/under_title.png?raw=true
 
 [last-commit-date-badge]: https://img.shields.io/github/last-commit/ModernNFTSpace/MultipleNFTUploader?color=green
