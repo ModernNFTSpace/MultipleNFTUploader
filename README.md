@@ -191,8 +191,8 @@ But if you have a penchant for art - better help us with the graphic design of t
 ## Contacts
 
 If you have any questions or suggestions please contact us:
- - via [telegram bot](#tg-feedback-bot-link)
- - via channel [@modern_nft_space]([tg-channel-link])
+ - via [telegram bot][tg-feedback-bot-link]
+ - via channel [@modern_nft_space][tg-channel-link]
  
 ## License
 
