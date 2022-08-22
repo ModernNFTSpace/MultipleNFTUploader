@@ -69,6 +69,7 @@ Implemented in python:
 ## Requirements
 Backend part:
 >OS: Windows 7+ (UNIX support will be added)<br>
+>RAM: 2+ GB
 >Python 3.8+<br>
 >Google Chrome<br>
 >SSD(Optional)
