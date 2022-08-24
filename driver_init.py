@@ -173,6 +173,8 @@ def driver_init(secret_phases: str = SECRET, temp_password: str = PASSWORD, auth
 
         driver.switch_to.window(driver.window_handles[-1])
 
+        wait_for_element(By.XPATH, '//div[contains(@class, "welcome-page__header")]', sec=10)
+
         driver.get(
             'chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html#initialize/create-password/import-with-seed-phrase')
 
@@ -272,8 +274,8 @@ def driver_init(secret_phases: str = SECRET, temp_password: str = PASSWORD, auth
 
             switch_to_last_window() # switch_to_metamask_popup
 
-            wait_for_element(By.XPATH, '//button[contains(@class, "btn-primary")]', sec=5).click()  # step 1
-            wait_for_element(By.XPATH, '//button[contains(@class, "btn-primary")]', sec=5).click()  # step 2
+            wait_for_element(By.XPATH, '//button[contains(@class, "btn-primary")]', sec=10).click()  # step 1
+            wait_for_element(By.XPATH, '//button[contains(@class, "btn-primary")]', sec=10).click()  # step 2
             driver.switch_to.window(current_window)
 
             @step(auto_run=True, max_repeat=5)
