@@ -3,7 +3,7 @@ from selenium.webdriver.remote.webdriver import WebDriver as WebDriverParentClas
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
 
 from selenium.common.exceptions import SessionNotCreatedException, WebDriverException, TimeoutException
@@ -67,7 +67,7 @@ except ExceptionsFoundedDuringInit:
     SECRET = None
     PASSWORD = None
 
-EXTENSION_PATH   = abs_path_from_base_dir_relative('metamask/10.10.2_0.crx')
+EXTENSION_PATH   = abs_path_from_base_dir_relative('metamask/10.18.3_0.crx')
 
 
 def check_webdriver_exists(webdriver_path: str = MNU_WEBDRIVER_ABS_PATH_PATTERN) -> bool:
@@ -117,7 +117,7 @@ def init_driver_for_manual_actions(webdriver_path: str = MNU_WEBDRIVER_ABS_PATH)
     return driver
 
 
-def driver_init(secret_phases=SECRET, temp_password=PASSWORD, auth_lock: Lock = Lock(), hide_warnings: bool = False, webdriver_path: str = MNU_WEBDRIVER_ABS_PATH) -> WebDriverParentClass:
+def driver_init(secret_phases: str = SECRET, temp_password: str = PASSWORD, auth_lock: Lock = Lock(), hide_warnings: bool = False, webdriver_path: str = MNU_WEBDRIVER_ABS_PATH) -> WebDriverParentClass:
     """
     Configuring driver for uploading
     #TODO: Refactoring
@@ -176,28 +176,36 @@ def driver_init(secret_phases=SECRET, temp_password=PASSWORD, auth_lock: Lock = 
         driver.get(
             'chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html#initialize/create-password/import-with-seed-phrase')
 
-        time.sleep(1)
-        inputs = wait_for_elements(By.XPATH, '//input')
-        assert len(inputs) == 3
-        return inputs
+        time.sleep(0.5)
 
-    inputs = configure_meta_mask()
+        secrets_list = secret_phases.strip().split(' ')
+        secrets_count = len(secrets_list)
 
-    @step(auto_run=True)
-    def signin_metamask():
-        inputs[0].send_keys(secret_phases)
-        inputs[1].send_keys(temp_password)
-        inputs[2].send_keys(temp_password)
+        if secrets_count>12:
+            select = Select(wait_for_element(By.XPATH, '//select[contains(@class, "dropdown__select")]'))
+            select.select_by_value(str(secrets_count))
+
+        inputs = wait_for_elements(By.XPATH, '//input[contains(@class, "MuiInput")]')
+
+        assert len(inputs) == secrets_count+2
+
+        for input_f, secret in zip(inputs[:secrets_count], secrets_list):
+            input_f.send_keys(secret)
+
+        inputs[-2].send_keys(temp_password)
+        inputs[-1].send_keys(temp_password)
 
         current_url = driver.current_url
-        wait_for_element(By.CSS_SELECTOR, '.first-time-flow__terms').click()
-        wait_for_element(By.CSS_SELECTOR, '.first-time-flow__button').click()
+        wait_for_element(By.XPATH, '//*[@id="create-new-vault__terms-checkbox"]').click()
+        wait_for_element(By.XPATH, '//button[contains(@class, "button")]').click()
         for i in range(10):
             if current_url != driver.current_url:
                 break
             time.sleep(1)
 
         assert '#initialize/end-of-flow' in driver.current_url or '#initialize/seed-phrase-intro' in driver.current_url
+
+    configure_meta_mask()
 
     @step(auto_run=True)
     def signin_opensea_with_metamask(): # on this step you may caught some troubles with cloudflare
@@ -264,8 +272,8 @@ def driver_init(secret_phases=SECRET, temp_password=PASSWORD, auth_lock: Lock = 
 
             switch_to_last_window() # switch_to_metamask_popup
 
-            wait_for_element(By.XPATH, '//*[@id="app-content"]/div/div[2]/div/div[2]/div[3]/div[2]/button[2]', sec=5).click()  # step 1
-            wait_for_element(By.XPATH, '//*[@id="app-content"]/div/div[2]/div/div[2]/div[2]/div[2]/footer/button[2]', sec=5).click()  # step 2
+            wait_for_element(By.XPATH, '//button[contains(@class, "btn-primary")]', sec=5).click()  # step 1
+            wait_for_element(By.XPATH, '//button[contains(@class, "btn-primary")]', sec=5).click()  # step 2
             driver.switch_to.window(current_window)
 
             @step(auto_run=True, max_repeat=5)

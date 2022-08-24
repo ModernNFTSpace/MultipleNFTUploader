@@ -6,3 +6,4 @@ dev/
 /bin/*
 !.git*
 !.github/
+venv_name.txt
