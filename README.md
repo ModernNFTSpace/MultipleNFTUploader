@@ -147,7 +147,7 @@ MNU stores some data in configuration files, such as collection data (will be mi
       ```
    1. Save & exit
    
-1. Configure `configs/metamask.conf`:<br>
+1. Configure `configs/opensea_collection.conf`:<br>
    1. Open in any editor
    1. Paste inside quotes collection slug, in which you want to upload assets.<br>For example `mnu-collection` is a slug for `https://opensea.io/collection/mnu-collection`
       ```yaml
