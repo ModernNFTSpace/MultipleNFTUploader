@@ -125,10 +125,10 @@ def driver_init(secret_phases: str = SECRET, temp_password: str = PASSWORD, auth
 
     driver = init_driver_for_manual_actions(webdriver_path)
 
-    def wait_for_element(by, data, sec: Union[int, float] = 2, cond=EC.presence_of_element_located, web_driver=driver, poll_frequency=0.5):
+    def wait_for_element(by, data, sec: Union[int, float] = 10, cond=EC.presence_of_element_located, web_driver=driver, poll_frequency=0.5):
         return WebDriverWait(web_driver, sec, poll_frequency=poll_frequency).until(cond((by, data)))
 
-    def wait_for_elements(by, data, sec=2, cond=EC.presence_of_all_elements_located, web_driver=driver, poll_frequency=0.5):
+    def wait_for_elements(by, data, sec: Union[int, float] = 10, cond=EC.presence_of_all_elements_located, web_driver=driver, poll_frequency=0.5):
         return WebDriverWait(web_driver, sec, poll_frequency=poll_frequency).until(cond((by, data)))
 
     def step(max_repeat=10, sleep_time=1, step_hide_warnings=False, auto_run=False, _args=[]):
@@ -165,6 +165,28 @@ def driver_init(secret_phases: str = SECRET, temp_password: str = PASSWORD, auth
             driver.close()
         driver.switch_to.window(driver.window_handles[-1])
 
+    def close_all_tabs_except(tab_handle, driver=driver):
+        for w in driver.window_handles:
+            if w != tab_handle:
+                driver.switch_to.window(w)
+                driver.close()
+        driver.switch_to.window(tab_handle)
+
+    def open_metamask_popup(driver=driver):
+        target_url = 'chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/popup.html'
+        driver.execute_script("window.open('', '_blank');")
+        switch_to_last_window()
+        driver.get(target_url)
+        wait_for_element(By.XPATH, '//*[@id="app-content"]', sec=30)
+        return driver.current_window_handle
+
+    def get_metamask_popup_window(driver=driver):
+        time.sleep(1)
+        target_url = 'chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/popup.html'
+        driver.get(target_url)
+        wait_for_element(By.XPATH, '//*[@id="app-content"]', sec=10)
+
+
     @step()
     def configure_meta_mask():
         for w in driver.window_handles[1:]:
@@ -173,7 +195,7 @@ def driver_init(secret_phases: str = SECRET, temp_password: str = PASSWORD, auth
 
         driver.switch_to.window(driver.window_handles[-1])
 
-        wait_for_element(By.XPATH, '//div[contains(@class, "welcome-page__header")]', sec=10)
+        wait_for_element(By.XPATH, '//div[contains(@class, "welcome-page__header")]', sec=30)
 
         driver.get(
             'chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html#initialize/create-password/import-with-seed-phrase')
@@ -268,11 +290,17 @@ def driver_init(secret_phases: str = SECRET, temp_password: str = PASSWORD, auth
                 ... # all ok
 
         with auth_lock:
+            current_window = driver.current_window_handle
+            close_all_tabs_except(current_window)
+
+            metamask_popup = open_metamask_popup()
+            driver.switch_to.window(current_window)
+
             wait_for_element(By.XPATH, '//span[contains(text(), "MetaMask")]/../..', sec=5).click()
 
-            current_window = driver.current_window_handle
-
-            switch_to_last_window() # switch_to_metamask_popup
+            driver.switch_to.window(metamask_popup) # switch_to_metamask_popup
+            get_metamask_popup_window()
+            get_metamask_popup_window()
 
             wait_for_element(By.XPATH, '//button[contains(@class, "btn-primary")]', sec=10).click()  # step 1
             wait_for_element(By.XPATH, '//button[contains(@class, "btn-primary")]', sec=10).click()  # step 2
@@ -285,9 +313,15 @@ def driver_init(secret_phases: str = SECRET, temp_password: str = PASSWORD, auth
     def _check_privacy_policy_popup():
         try:
             current_window = driver.current_window_handle
+            close_all_tabs_except(current_window)
+
+            metamask_popup = open_metamask_popup()
+            driver.switch_to.window(current_window)
+
             wait_for_element(By.XPATH, '//div[@aria-modal="true"]/footer/button[2]', sec=2.5, poll_frequency=0.1).click()
 
-            switch_to_last_window()  # switch_to_metamask_popup
+            driver.switch_to.window(metamask_popup)  # switch_to_metamask_popup
+            get_metamask_popup_window()
 
             wait_for_element(By.XPATH, '//*[@id="app-content"]/div/div[2]/div/div[3]/button[2]', poll_frequency=0.2).click()  # confirm
             driver.switch_to.window(current_window)
@@ -310,10 +344,15 @@ def driver_init(secret_phases: str = SECRET, temp_password: str = PASSWORD, auth
         _get_confirm()
         if '/login?' in driver.current_url:
             current_window = driver.current_window_handle
+            close_all_tabs_except(current_window)
+
+            metamask_popup = open_metamask_popup()
+            driver.switch_to.window(current_window)
 
             wait_for_element(By.XPATH, '//span[contains(text(), "MetaMask")]/../..').click()
 
-            switch_to_last_window() # switch_to_metamask_popup
+            driver.switch_to.window(metamask_popup) # switch_to_metamask_popup
+            get_metamask_popup_window()
 
             wait_for_element(By.XPATH, '//*[@id="app-content"]/div/div[2]/div/div[3]/button[2]').click()  # confirm
             driver.switch_to.window(current_window)
