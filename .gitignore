@@ -1,6 +1,7 @@
 __pycache__/
 /configs/*.conf
 dev/
+PureMNUSeller/
 .*/
 /test.py
 /bin/*

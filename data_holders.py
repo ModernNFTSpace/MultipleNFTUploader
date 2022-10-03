@@ -246,6 +246,7 @@ class SingleAssetData(MutableMapping):
     @property
     def blockchain(self) -> str:
         """Modify at your own risk"""
+        #return 'ETHEREUM'
         return 'MATIC'
 
     def __str__(self):

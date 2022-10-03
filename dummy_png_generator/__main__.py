@@ -7,6 +7,7 @@ if __name__ == "__main__":
     >python -m dummy_png_generator
     """
     import sys
+    import time
     import argparse
     import subprocess
 
@@ -19,8 +20,9 @@ if __name__ == "__main__":
 
     target_size = (int(args.size), args.units)
 
+    start_time= time.time()
     image_path = generate_dummy_png(target_size, fastest=args.fastest)
-    print(f"Image (~{target_size[0]} {target_size[1]})\nStored at: {image_path}")
+    print(f"Image (~{target_size[0]} {target_size[1]} in {(time.time()-start_time):.2f} sec.)\nStored at: {image_path}")
     if args.open:
         open_image_command = \
             {

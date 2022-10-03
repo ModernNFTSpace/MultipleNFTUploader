@@ -30,7 +30,7 @@
 
 > ❗ Please upgrade to latest version. Due to some reason, the old version of Metamask did not work in some countries.
 
-Uploads NFT assets to opensea.io, 'automatically' and with the highest possible performance (also possibly parallel loading will be added).
+Uploads NFT assets to opensea.io, 'automatically' (not auto-clicker) and with the highest possible performance (also possibly parallel loading will be added).
 Implemented in python:
 * Account authorization - Selenium
 * Uploading - reversed opensea`s API and some features

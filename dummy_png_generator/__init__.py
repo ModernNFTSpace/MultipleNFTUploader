@@ -66,7 +66,7 @@ def generate_image(target_size: int, fastest: bool = False) -> Image.Image:
     :param fastest: Use fastest way(skip image, modifying)
     :return: Generated image
     """
-    size = calculate_image_shape(target_size, 32)
+    size = calculate_image_shape(target_size)
     image = Image.new('RGBA', size, (134, 219, 142, 255))
     return image if fastest else modify_image(image)
 
@@ -81,7 +81,7 @@ def generate_dummy_png(target_size: Tuple[int, METRICS] = (1024, "mb"),
 
     :param dest_dir: Generated files will be stored in this dir
     :param target_size: Target size of file in bytes
-    :param fastest: Use fastest way(skip image, modifying)
+    :param fastest: Use fastest way(skip image modifying)
     :param dummy_prefix: Generated file prefix
     :return: Path to generated dummy file
     """

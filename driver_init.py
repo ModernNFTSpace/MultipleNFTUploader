@@ -300,7 +300,6 @@ def driver_init(secret_phases: str = SECRET, temp_password: str = PASSWORD, auth
 
             driver.switch_to.window(metamask_popup) # switch_to_metamask_popup
             get_metamask_popup_window()
-            get_metamask_popup_window()
 
             wait_for_element(By.XPATH, '//button[contains(@class, "btn-primary")]', sec=10).click()  # step 1
             wait_for_element(By.XPATH, '//button[contains(@class, "btn-primary")]', sec=10).click()  # step 2
