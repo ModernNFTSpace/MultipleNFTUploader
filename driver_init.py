@@ -296,12 +296,14 @@ def driver_init(secret_phases: str = SECRET, temp_password: str = PASSWORD, auth
             metamask_popup = open_metamask_popup()
             driver.switch_to.window(current_window)
 
-            wait_for_element(By.XPATH, '//span[contains(text(), "MetaMask")]/../..', sec=5).click()
+            wait_for_element(By.XPATH, '//span[contains(text(), "MetaMask")]/../..', cond=EC.element_to_be_clickable, sec=5).click()
 
             driver.switch_to.window(metamask_popup) # switch_to_metamask_popup
             get_metamask_popup_window()
 
-            wait_for_element(By.XPATH, '//button[contains(@class, "btn-primary")]', sec=10).click()  # step 1
+            @step(auto_run=True, max_repeat=5)
+            def _check_context():
+                wait_for_element(By.XPATH, '//button[contains(@class, "btn-primary")]', sec=10).click()  # step 1
             wait_for_element(By.XPATH, '//button[contains(@class, "btn-primary")]', sec=10).click()  # step 2
             driver.switch_to.window(current_window)
 
@@ -330,30 +332,40 @@ def driver_init(secret_phases: str = SECRET, temp_password: str = PASSWORD, auth
 
     #_check_privacy_policy_popup() #Need only on first account login
 
-    @step(auto_run=True, max_repeat=3, sleep_time=0.1)
+    current_window = driver.current_window_handle
+
+    @step(auto_run=True, max_repeat=5, sleep_time=0.1)
     def get_uploading_page():
+
+        crunch_time = 2
+        driver.switch_to.window(current_window)
+        close_all_tabs_except(current_window)
 
         upload_url = 'https://opensea.io/asset/create' #f'https://opensea.io/collection/{collection_name}/assets/create'
         driver.get(upload_url)
 
-        @step(max_repeat=30, sleep_time=0.1, step_hide_warnings=True)
+        @step(max_repeat=3, sleep_time=0.1, step_hide_warnings=True)
         def _get_confirm(base_url='/account'):
             assert base_url not in driver.current_url
 
         _get_confirm()
         if '/login?' in driver.current_url:
-            current_window = driver.current_window_handle
-            close_all_tabs_except(current_window)
 
             metamask_popup = open_metamask_popup()
             driver.switch_to.window(current_window)
 
-            wait_for_element(By.XPATH, '//span[contains(text(), "MetaMask")]/../..').click()
+            wait_for_element(By.XPATH, '//div/h1')
+            login_btn = wait_for_element(By.XPATH, '//span[contains(text(), "MetaMask")]/../..')
+            time.sleep(crunch_time)
+            login_btn.click()
 
             driver.switch_to.window(metamask_popup) # switch_to_metamask_popup
             get_metamask_popup_window()
 
-            wait_for_element(By.XPATH, '//*[@id="app-content"]/div/div[2]/div/div[3]/button[2]').click()  # confirm
+            try:
+                wait_for_element(By.XPATH, '//*[@id="app-content"]/div/div[2]/div/div[3]/button[2]').click()  # confirm
+            except Exception:
+                raise UnexpectedResult()
             driver.switch_to.window(current_window)
 
             @step(auto_run=True, max_repeat=25, sleep_time=0.2, step_hide_warnings=True)
