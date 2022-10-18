@@ -1,7 +1,12 @@
-import os
+import requests
+import socket
+import json
+import time
 import sys
+import os
 
 os.environ["KIVY_NO_ARGS"] = "1"
+os.environ["KCFG_KIVY_LOG_LEVEL"] = "error"
 directory = os.path.abspath(__file__ + "/../../../")
 sys.path.append(directory)
 
@@ -14,11 +19,9 @@ from typing import Optional, Union, Literal, Any, get_args
 from mnu_api_primitives import UIStateHolder, construct_MNUAPIPrimitive_from_dict, _type_of_primitive_holder
 
 from config import MNUClientConfig
+from kivy.config import Config
 
-import requests
-import socket
-import json
-import time
+Config.set('graphics', 'resizable', False)
 
 from kivy.app import App
 from kivy.lang.builder import Builder
@@ -28,10 +31,8 @@ from kivy.properties import NumericProperty, OptionProperty, StringProperty, Dic
 from kivy .core.clipboard import Clipboard
 
 from kivy.core.window import Window
-from kivy.config import Config
 from kivy.clock import Clock
 
-Config.set('kivy', 'log_level', 'error')
 
 Builder.load_file("kivy_markup.kv")
 
@@ -349,8 +350,6 @@ class MNUploaderGUI(App):
         return return_bus
 
     def build(self):
-        Config.set('graphics', 'resizable', False)
-
         Window.size = (500, 400)
 
         return self.screen_manager
