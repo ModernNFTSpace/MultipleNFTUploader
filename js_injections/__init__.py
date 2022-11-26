@@ -1,3 +1,4 @@
+from typing import Sequence, Tuple
 import os
 
 
@@ -10,7 +11,7 @@ injections_files = \
     }
 
 
-def injections_exists() -> list[tuple[bool, str]]:
+def injections_exists() -> Sequence[Tuple[bool, str]]:
     return [(os.path.isfile(path), path) for key, path in injections_files.items()]
 
 
