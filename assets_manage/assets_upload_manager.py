@@ -5,7 +5,7 @@ from config import MetamaskConfig, CollectionConfig
 from assets_manage.assets_handler import AssetsHandler
 from mnu_utils import console
 
-from typing import Union, Literal
+from typing import Union, Literal, Dict
 from time import time as UnixTimestamp
 from threading import Thread, Event, Lock
 from queue import Queue, Empty as QueueEmptyException
@@ -145,7 +145,7 @@ class AssetsUploadManager:
         self.lock_drivers_input_bus()
 
         self.last_worker_id = 0 # type: int
-        self.workers_pool = dict() # type: dict[int, DriverInstance]
+        self.workers_pool = dict() # type: Dict[int, DriverInstance]
 
         self.assets_handler = AssetsHandler(self.workers_bus, self.output_bus)
 

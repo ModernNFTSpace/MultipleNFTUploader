@@ -11,7 +11,7 @@ METRICS = Literal["b", "kb", "mb", "gb"]
 METRICS_LIST = get_args(METRICS)
 
 
-def calculate_image_shape(target_size: int, color_depth: int = 32) -> tuple[int, int]:
+def calculate_image_shape(target_size: int, color_depth: int = 32) -> Tuple[int, int]:
     """
     Calculate image shape(x, y) depend on target size
 

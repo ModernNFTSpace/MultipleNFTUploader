@@ -45,6 +45,9 @@ Implemented in python:
 
 
 #### Note
+
+❗ Currently supported python version 3.7 - 3.10. Since the library used by MNU for the GUI has not yet been officially released for version 3.11
+
 >MNU only uploads assets, to put up for sale use [MNManager](#mnm-repo)(repo will be unlocked soon)
 >For view full pipeline of uploading/selling assets read \[[How upload multiple assets to opensea.io][mn-guide-repo]\]
 ><br><br>
