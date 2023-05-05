@@ -26,6 +26,12 @@
 ¹ Tested on 2000 assets ~100 KB and ~3 sec for each<br />
 ¹ Assets per Hour → <a name="aph">ApH</a>
 
+## ❗ Deprecated
+
+Conceptually, MNU continues to be able to work, but as a result of the Opensea update, it needs to be revised, but since the need for the project has disappeared, its support has been discontinued.
+> Perhaps in the future there will be a 'next-gen' version, with a more thoughtful interface.
+
+
 ## 🌟 About
 
 > ❗ Please upgrade to latest version. Due to some reason, the old version of Metamask did not work in some countries.
