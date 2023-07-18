@@ -18,9 +18,6 @@
 [Installation](#-installation) •
 [Support](#support)
  
-[![liberapay-badge]][liberapay-link]
-![last-commit-date-badge]
-[![patreon-badge]][patreon-link]
 </div>
 
 ¹ Tested on 2000 assets ~100 KB and ~3 sec for each<br />
